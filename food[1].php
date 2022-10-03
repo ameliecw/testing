@@ -8,33 +8,17 @@ if(isset($_GET['food_sel'])){
 	$id = 1;
 }
 
-
-
-/*Food query*/
 $food_query = "SELECT food_name, availability, price, dietary FROM food WHERE food_id = '"  .  $id  .  "'";
 $food_result = mysqli_query($dbcon, $food_query);
 $food_record = mysqli_fetch_assoc($food_result);
 
 /*Food query - Dropdown menu */
-$all_food_query = "SELECT food_id, food_name, dietary, availability FROM food";
+$all_food_query = "SELECT food_id, food_name FROM food";
 $all_food_result = mysqli_query($dbcon, $all_food_query);
 $food_rows = mysqli_num_rows($all_food_result);
 
-/*Query for dietary info*/
-$dietary = "SELECT food_name, availability, price, dietary from food";
-$dietary_result = mysqli_query($dbcon, $dietary);
-
-$v = "SELECT * from food WHERE dietary = 'v' AND availability = 'available'";
-$v_result = mysqli_query($dbcon, $v);
-
-$vg = "SELECT * from food WHERE dietary = 'vg' AND availability = 'available'";
-$vg_result = mysqli_query($dbcon, $vg);
-
-$df = "SELECT * from food WHERE dietary = 'df' OR dietary = 'vg' AND availability = 'available'";
-$df_result = mysqli_query($dbcon, $df);
-
 /*Query to gather all food items*/
-$query_all_items = "SELECT * FROM food";
+$query_all_items = "SELECT * FROM food ORDER BY food_name";
 $all_items_results = mysqli_query($dbcon,$query_all_items);
 
 ?>
@@ -54,7 +38,7 @@ $all_items_results = mysqli_query($dbcon,$query_all_items);
 	<div class="grid-container">
 		<div class="item1">
 		<header>
-			<h1>Wellington East Girls' College Café</h1>
+			<h1>Food :)</h1>
 		</header>
 		</div>
 		
@@ -70,7 +54,7 @@ $all_items_results = mysqli_query($dbcon,$query_all_items);
 		</div>
 
 		<div class="item3">
-			Intro Intro Intro Intro Intro Intro Intro Intro
+			Intro intro intro
 		</div>
 		
 		<div class="item5">
@@ -78,7 +62,7 @@ $all_items_results = mysqli_query($dbcon,$query_all_items);
 			<?php
 			echo "<p> Food item: " . $food_record['food_name'] . "<br>";
 			echo "<p> Status: " . $food_record['availability'] . "<br>";
-			echo "<p> Price: $" . $food_record['price'] . "<br>";
+			echo "<p> Cost: $" . $food_record['price'] . "<br>";
 			?>
 
 			<!-- Dropdown food form -->
@@ -98,7 +82,17 @@ $all_items_results = mysqli_query($dbcon,$query_all_items);
 
 				<input type='submit' name='food_button' value='See the food information'>
 			</form>	
-			
+					
+		</div>
+		
+		<div class="item4">
+			<h2>All Food items</h2>
+			<?php
+			echo "All food items are in alphabetical order.". "<br>" . "<br>";
+			while($row = mysqli_fetch_array($all_items_results))
+				echo $row['food_name'] . "<br>";
+			?>
+
 			<!--Search for a food -->
 			<h2> Search for a food</h2>
 			<form action="" method="post">
@@ -120,92 +114,12 @@ $all_items_results = mysqli_query($dbcon,$query_all_items);
 				}else{
 
 					while ($row = mysqli_fetch_array($query)) {
-						echo "<p> Food item: " . $row ['food_name'];
-						echo "<p> Price: $" . $row ['price'];
-						echo "<p> Availability: " . $row ['availability'];
+						echo $row ['food_name'];
 						echo "<br>";
-						echo "<br>";
-						}
 					}
 				}
+			}
 			?>
-			<!--Search with dietary information-->
-			<h2>Search with dietary information</h2>
-			<form name="dietary_sel" id="dietary_sel" method="get" action="food.php">
-				<select name="dietary_sel" id="dietary_sel">
-					<option value="">Select an option...</option>
-					<option value="Vegetarian">Vegetarian</option>
-					<option value="Vegan">Vegan</option>
-					<option value="Dairy Free">Dairy Free</option>
-				</select>
-				<input type="submit" value="submit" >
-			</form>
-					
-				<?php
-				
-				if(isset($_GET['dietary_sel'])){
-					$id = $_GET['dietary_sel'];
-				}else{
-					$id = 1;
-				}
-				
-				if(isset($_GET['dietary_sel'])) {
-					$food = $_GET['dietary_sel'];
-				}else{
-					$food = 'all';
-				}
-				?>
-			
-				<div class="grid">
-					<?php
-					if ($food == "Vegetarian"){
-						while ($row = mysqli_fetch_array($v_result)) {
-							echo '<div class="box1">';
-							echo "<div class='box-item1'>" . $row['food_name'] . "</div>";
-							echo "<div class='box-item1'>" . "Status: " . $row['availability'] . "</div>";
-							echo "<div class='box-item1'>" . "Price: $" . $row['price'] . "</div>";
-							echo '</div>';
-						}
-					}
-
-					else if ($food == "Vegan"){
-						while ($row = mysqli_fetch_array($vg_result)) {
-							echo '<div class="box1">';
-							echo "<div class='box-item1'>" . $row['food_name'] . "</div>";
-							echo "<div class='box-item1'>" . "Status: " . $row['availability'] . "</div>";
-							echo "<div class='box-item1'>" . "Price: $" . $row['price'] . "</div>";
-							echo '</div>';
-						}
-					}
-
-					else if ($food == "Dairy Free"){
-						while ($row = mysqli_fetch_array($df_result)) {
-							echo '<div class="box1">';
-							echo "<div class='box-item1'>" . $row['food_name'] . "</div>";
-							echo "<div class='box-item1'>" . "Status: " . $row['availability'] . "</div>";
-							echo "<div class='box-item1'>" . "Price: $" . $row['price'] . "</div>";
-							echo '</div>';
-
-						}
-					}
-					?>
-				</div>
-
-		</div>
-		
-		<div class="item4">
-			<h2>All Food items</h2>
-			<div class="grid">
-				<?php
-				while($row = mysqli_fetch_array($all_items_results)){
-					echo '<div class="box1">';
-					echo "<div class='box-item1'>" . $row['food_name'] . "</div>";
-					echo "<div class='box-item1'>" . "Status: " . $row['availability'] . "</div>";
-					echo "<div class='box-item1'>" . "Price: $" . $row['price'] . "</div>";
-					echo '</div>';
-				}
-				?>
-			</div>
 		</div>
 
 		<div class="item6">
